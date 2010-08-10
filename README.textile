@@ -9,8 +9,8 @@ was implemented to provide the best possible security implementation to comply
 with federal HIPAA standards. If you are going to use the remote decryption
 functionality, you'll need to also install the RestClient gem.
 
-It is strongly recommended that unless you know exactly what you're doing,
-you should use http://github.com/spikex/strongbox instead.
+*It is strongly recommended that unless you know exactly what you're doing,
+you should use http://github.com/spikex/strongbox instead.*
 
 Because the largest amount of data that can practically be encrypted with a public
 key is 245 byte, by default Strongbox uses a two layer approach. First it encrypts
