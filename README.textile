@@ -197,7 +197,7 @@ the app server AND the decryption server.
 
 h2. Authors
 
-Spike Ilacqua
+Spike Ilacqua, Clark Snowdall, Ehren Murdick
 
 h2. Thanks
 
