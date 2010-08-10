@@ -1,8 +1,13 @@
-h1. Strongbox
+h1. Strongbox (by Optimis)
 
-Strongbox provides Public Key Encryption for ActiveRecord. By using a public key
+Strongbox by Optimis provides Public Key Encryption for ActiveRecord. By using a public key
 sensitive information can be encrypted and stored automatically. Once stored a
-password is required to access the information.
+password is required to access the information.  More importantly beyond the iniial
+scope of Strongbox, Strongbox by Optimis provides for decryption by a remote server,
+thus providing a machine separation between the public and private keys.  This
+was implemented to provide the best possible security implementation to comply
+with federal HIPAA standards. If you are going to use the remote decryption
+functionality, you'll need to also install the RestClient gem.
 
 Because the largest amount of data that can practically be encrypted with a public
 key is 245 byte, by default Strongbox uses a two layer approach. First it encrypts
@@ -23,13 +28,22 @@ and decrypted by calling the "decrypt" method with the private key password.
 
   plain_text = user.secret.decrypt 'letmein'
 
+If the remote decryption service is configured, the data can be accessed via
+
+  plain_text = user.secret.decrypt_remotely
+
+Note: This will make a request to the remote service with restclient.
+
 h2. Quick Start
 
 In your model:
 
 bc. class User < ActiveRecord::Base
   encrypt_with_public_key :secret,
-    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
+    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')    (optional if using remote decryption service)
+    :public_key => <path to public portion of the key>
+    :api_key <path to shared key for signature with remote decryption service>
+    :decryption_service_url <server address of decryption service like "http://decrypt.mydomain.com/decrypt_field">
 end
   
 In your migrations:
@@ -60,6 +74,12 @@ decrypt call:
 
 bc. user.secret.decrypt 'password'
 
+When using this gem with a remote decryption service, the private key generated 
+from the above process should be explicitily removed from the application server
+and instead installed on the remote decryption server. Furthermore, the keypair
+pass phrase should also not be stored on the app server but instead be placed on
+the remote decryption server.  
+
 h2. Gem installation (Rails 2.1+)
 
 In config/environment.rb:
@@ -72,8 +92,10 @@ _encrypt_with_public_key_ sets up the attribute it's called on for automatic
 encryption.  It's simplest form is:
 
 bc. class User < ActiveRecord::Base
-  encrypt_with_public_key :secret,
-    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')
+    :key_pair => File.join(RAILS_ROOT,'config','keypair.pem')    (optional if using remote decryption service)
+    :public_key => <path to public portion of the key>
+    :api_key <path to shared key for signature with remote decryption service>
+    :decryption_server <server address of decryption service>
 end
 
 Which will encrypt the attribute "secret". The attribute will be encrypted using
@@ -88,6 +110,10 @@ Options to encrypt_with_public_key are:
 :private_key - Path to the private key file.  Overrides :keypair.
 
 :keypair - Path to a file containing both the public and private keys.
+
+:api_key - Path to the key required to sign requests to the decryption sevice
+
+:decryption_server - the address to the decryption server.
 
 :symmetric :always/:never - Encrypt the date using symmetric encryption. The public
 key is used to encrypt an automatically generated key and IV. This allows for large
@@ -162,6 +188,9 @@ needs the data and the key stored on the server.
 If you use public key encryption, the attacker needs the data, the private key, and
 the password. This means the attacker has to sniff the password somehow, so that's
 what you need to protect against.
+
+If you use a remote decryption service, an attacker needs to gain access to both 
+the app server AND the decryption server.
 
 h2. Authors
 

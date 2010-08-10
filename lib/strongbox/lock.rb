@@ -7,7 +7,6 @@ module Strongbox
     def initialize name, instance, options = {}
       @name              = name
       @instance          = instance
-      
       @size = nil
       
       options = Strongbox.options.merge(options)
@@ -20,6 +19,9 @@ module Strongbox
       @symmetric_cipher = options[:symmetric_cipher]
       @symmetric_key = options[:symmetric_key] || "#{name}_key"
       @symmetric_iv = options[:symmetric_iv] || "#{name}_iv"
+
+      @api_key = options[:api_key]
+      @decryption_service_url = options[:decryption_service_url]
     end
     
     def encrypt plaintext
@@ -54,7 +56,12 @@ module Strongbox
         @instance[@name] = ciphertext
       end
     end
-    
+   
+
+    def decrypt_remotely
+      RestClient.post(@decryption_service_url, remote_params)
+    end
+
     # Given the private key password decrypts the attribute.  Will raise
     # OpenSSL::PKey::RSAError if the password is wrong.
     
@@ -112,6 +119,28 @@ module Strongbox
     end
 
 private
+     def sign!(params_hash = {})
+      digest = Digest::SHA2.new
+      params_hash.keys.sort.each do |key|
+        digest.update(key)
+        data = params_hash[key]
+        digest.update(data)
+      end
+      digest.update(@api_key)
+      
+      params_hash[:signature] = digest.to_s
+    end
+
+    def remote_params
+      p = {
+        "encrypted_data" => @instance[@name],
+        "encrypted_key"  => @instance[@symmetric_key],
+        "encrypted_iv"   => @instance[@symmetric_iv]
+      }
+      sign!(p)
+      p
+    end
+
     def get_rsa_key(key,password = '')
       return key if key.is_a?(OpenSSL::PKey::RSA)
       if key !~ /^-+BEGIN .* KEY-+$/
@@ -119,5 +148,6 @@ private
       end
       return OpenSSL::PKey::RSA.new(key,password)
     end
-  end
-end
+
+  end # class Lock
+end # module StrongBox
