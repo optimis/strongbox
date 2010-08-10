@@ -22,6 +22,8 @@ module Strongbox
 
       @api_key = options[:api_key]
       @decryption_service_url = options[:decryption_service_url]
+
+      @password = options[:password]
     end
     
     def encrypt plaintext
@@ -56,6 +58,14 @@ module Strongbox
         @instance[@name] = ciphertext
       end
     end
+
+    def decrypt
+      if @decryption_service_url
+        decrypt_remotely
+      else
+        decrypt_locally
+      end
+    end
    
 
     def decrypt_remotely
@@ -65,21 +75,21 @@ module Strongbox
     # Given the private key password decrypts the attribute.  Will raise
     # OpenSSL::PKey::RSAError if the password is wrong.
     
-    def decrypt password = nil
+    def decrypt_locally
       # Given a private key and a nil password OpenSSL::PKey::RSA.new() will
       # *prompt* for a password, we default to an empty string to avoid that.
       ciphertext = @instance[@name]
       return nil if ciphertext.nil?
       return "" if ciphertext.empty?
       
-      return "*encrypted*" if password.nil?
+      return "*encrypted*" if @password.nil?
       unless @private_key
         raise StrongboxError.new("#{@instance.class} model does not have private key_file")
       end
       
       if ciphertext
         ciphertext = Base64.decode64(ciphertext) if @base64
-        private_key = get_rsa_key(@private_key,password)
+        private_key = get_rsa_key(@private_key,@password)
         if @symmetric == :always
           random_key = @instance[@symmetric_key]
           random_iv = @instance[@symmetric_iv]

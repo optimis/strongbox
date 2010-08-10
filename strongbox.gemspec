@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "strongbox"
-  s.version     = "0.4.1"
+  s.version     = "0.4.2"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Spike Ilacqua", "Clark Snowdall", "Ehren Murdick"]
   s.email       = ["csnowdall@optimis.com", "ehren.murdick@gmail.com"]
