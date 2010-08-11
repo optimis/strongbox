@@ -58,25 +58,6 @@ class StrongboxTest < Test::Unit::TestCase
         end
       end
           
-      context 'with symmetric encryption disabled' do
-        setup do
-          rebuild_class(:key_pair => File.join(FIXTURES_DIR,'keypair.pem'),
-                        :symmetric => :never)
-          @dummy = Dummy.new
-          @dummy.secret = 'Shhhh'
-        end
-        
-        should 'return secret when unlocked'  do
-          assert_equal 'Shhhh', @dummy.secret.decrypt
-        end
-        
-        should 'not generate and store symmetric encryption key and IV' do
-          assert_nil @dummy.attributes['secret_key']
-          assert_nil @dummy.attributes['secret_iv']
-        end
-
-      end
-      
       context 'with Base64 encoding enabled' do
         setup do
           rebuild_class(:key_pair => File.join(FIXTURES_DIR,'keypair.pem'),
@@ -88,9 +69,9 @@ class StrongboxTest < Test::Unit::TestCase
         should 'Base64 encode the ciphertext' do
           # Base64 encoded text is limited to the charaters A–Z, a–z, and 0–9,
           # and is padded with 0 to 2 equal-signs
-          assert_match /^[0-9A-Za-z+\/]+={0,2}$/, @dummy.attributes['secret']
-          assert_match /^[0-9A-Za-z+\/]+={0,2}$/, @dummy.attributes['secret_key']
-          assert_match /^[0-9A-Za-z+\/]+={0,2}$/, @dummy.attributes['secret_iv']
+          assert_match BASE64_REGEX, @dummy.attributes['secret']
+          assert_match BASE64_REGEX, @dummy.attributes['secret_key']
+          assert_match BASE64_REGEX, @dummy.attributes['secret_iv']
         end
         
         should 'encrypt the data'  do

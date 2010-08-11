@@ -9,13 +9,20 @@ require 'active_record'
 require 'logger'
 gem 'shoulda', ">= 2.9.0"
 require 'shoulda'
+
+gem 'mocha'
+require 'mocha'
 begin require 'redgreen'; rescue LoadError; end
 
 require 'strongbox'
+require 'paperclip'
 
 ENV['RAILS_ENV'] ||= 'test'
 
 FIXTURES_DIR = File.join(File.dirname(__FILE__), "fixtures") 
+
+BASE64_REGEX = /^[0-9A-Za-z+\/]+={0,2}$/
+
 config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
 ActiveRecord::Base.establish_connection(config['test'])

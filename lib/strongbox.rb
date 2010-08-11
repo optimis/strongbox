@@ -2,6 +2,7 @@ require 'openssl'
 require 'base64'
 
 require 'strongbox/lock'
+require 'strongbox/paperclip_processor'
 
 module Strongbox
 
@@ -17,7 +18,6 @@ module Strongbox
     def options
       @options ||= {
         :base64 => false,
-        :symmetric => :always,
         :padding => RSA_PKCS1_PADDING,
         :symmetric_cipher => 'aes-256-cbc'
       }
@@ -64,7 +64,7 @@ module Strongbox
   module InstanceMethods
     def lock_for name
       @_locks ||= {}
-      @_locks[name] ||= Lock.new(name, self, self.class.lock_options[name])
+      @_locks[name] ||= Lock.new(self.class.lock_options[name].merge(:instance => self, :name => name))
     end
   end
 end
