@@ -7,6 +7,9 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/optimis/strongbox"
   s.summary     = "Encryption extension for rails"
   s.description = "Asymetric encryption for AR columns, including remote decryption services"
+
+  s.add_dependency "rest-client", ">=1.5.0"
+  s.add_dependency "paperclip",   ">=2.3.3"
  
   s.required_rubygems_version = ">= 1.3.5"
  

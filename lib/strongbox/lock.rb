@@ -11,14 +11,14 @@ module Strongbox
       
       options = Strongbox.options.merge(options)
       
-      @base64 = options[:base64]
-      @public_key = options[:public_key] || options[:key_pair]
-      @private_key = options[:private_key] || options[:key_pair]
-      @padding = options[:padding]
-      @symmetric = options[:symmetric]
+      @base64           = options[:base64]
+      @public_key       = options[:public_key] || options[:key_pair]
+      @private_key      = options[:private_key] || options[:key_pair]
+      @padding          = options[:padding]
+      @symmetric        = options[:symmetric]
       @symmetric_cipher = options[:symmetric_cipher]
-      @symmetric_key = options[:symmetric_key] || "#{name}_key"
-      @symmetric_iv = options[:symmetric_iv] || "#{name}_iv"
+      @symmetric_key    = options[:symmetric_key] || "#{name}_key"
+      @symmetric_iv     = options[:symmetric_iv] || "#{name}_iv"
 
       @api_key = options[:api_key]
       @decryption_service_url = options[:decryption_service_url]
