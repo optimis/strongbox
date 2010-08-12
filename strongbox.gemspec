@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description = "Asymetric encryption for AR columns, including remote decryption services"
 
   s.add_dependency "rest-client", ">=1.5.0"
-  s.add_dependency "active_support"
+  s.add_dependency "activesupport"
  
   s.required_rubygems_version = ">= 1.3.5"
  
