@@ -15,7 +15,6 @@ require 'mocha'
 begin require 'redgreen'; rescue LoadError; end
 
 require 'strongbox'
-require 'paperclip'
 
 ENV['RAILS_ENV'] ||= 'test'
 

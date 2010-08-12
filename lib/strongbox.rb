@@ -2,7 +2,6 @@ require 'openssl'
 require 'base64'
 
 require 'strongbox/lock'
-require 'strongbox/paperclip_processor'
 
 module Strongbox
 

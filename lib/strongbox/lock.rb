@@ -6,8 +6,9 @@ module Strongbox
       
     def initialize options = {}
       @size = nil
-      
+
       options = Strongbox.options.merge(options)
+      options = options.with_indifferent_access
       
       @name             = options[:name]
       @instance         = options[:instance]
@@ -21,7 +22,6 @@ module Strongbox
 
       @api_key = options[:api_key]
       @decryption_service_url = options[:decryption_service_url]
-
       @password = options[:password]
     end
     
