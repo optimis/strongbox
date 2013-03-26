@@ -43,9 +43,7 @@ module Strongbox
     def encrypt_with_public_key(name, options = {})
       include InstanceMethods
 
-      class_inheritable_reader :lock_options
-      write_inheritable_attribute(:lock_options, {}) if lock_options.nil?
-
+      class_attribute :lock_options
 
       lock_options[name] = options.symbolize_keys.reverse_merge Strongbox.options
           
