@@ -44,6 +44,7 @@ module Strongbox
       include InstanceMethods
 
       class_attribute :lock_options
+      self.lock_options = {} if lock_options.nil?
 
       lock_options[name] = options.symbolize_keys.reverse_merge Strongbox.options
           
